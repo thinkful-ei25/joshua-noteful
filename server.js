@@ -15,6 +15,11 @@ app.get('/api/notes', (req, res) => {
     res.json(data);
 });
 
+app.get('/api/notes/:id', (req, res) => {
+    const id = req.params.id;
+    res.json(data.find(item => item.id === Number(id)));
+});
+
 
 app.listen(8080, function () {
     console.info(`Server listening on ${this.address().port}`);
@@ -24,6 +29,3 @@ app.listen(8080, function () {
 
 
 
-// app.get('/api/notes/:id', (req, res) => {
-//     res.json(data.id);
-// });
