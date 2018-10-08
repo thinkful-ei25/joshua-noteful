@@ -11,14 +11,26 @@ const app = express();
 
 app.use(express.static('public'));
 
-app.get('/api/notes', (req, res) => {
-    res.json(data);
+app.get('/api/notes/', (req, res) => {
+    // const { search } = req.query;
+    // res.json(search ? data.filter(item => item.title.includes(search)) : data);
+    const search = req.query.search;
+    if(search){
+        let filtered = data.filter(item => {
+            return item.title.includes(search);
+        });
+        res.json(filtered);
+    }else{
+        res.json(data);
+    }
 });
 
 app.get('/api/notes/:id', (req, res) => {
     const id = req.params.id;
     res.json(data.find(item => item.id === Number(id)));
 });
+
+
 
 
 app.listen(8080, function () {
