@@ -21,4 +21,14 @@ const api = {
       success: callback
     });
   }
+
+  update: function(id, obj, callback) {
+    $.ajax({
+      type: 'PUT',
+      url: `/api/notes/${id}`,
+      contentType: 'json',
+      data: JSON.stringify(obj),
+      success: callback
+    });
+  }
 };

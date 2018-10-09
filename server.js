@@ -7,14 +7,37 @@ const notes = simDB.initialize(data);
  console.log('Hello Noteful!');
 
  const { PORT } = require('./config');
+ const { logger } = require('./middleware/logger');
 // Create an Express application
 
 const app = express();
+app.use(logger);
  // Create a static webserver
-const { logger } = require('./middleware/logger');
 app.use(express.static('public'));
  // Get All (and search by query)
-app.use(logger);
+app.use(express.json());
+
+app.put('/api/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+  updateFields.forEach(field => {
+    if(field in req.body){
+      updateObj[field] = req.body[field];
+    }
+  });
+  notes.update(id, updateObj, (err, item) => {
+    if(err) {
+      return next(err);
+    }
+    if(item){
+      res.json(item);
+    }else{
+      next();
+    }
+  });
+});
+
 app.get('/api/notes', (req, res, next) => {
   const { searchTerm } = req.query;
   notes.filter(searchTerm, (err, list) => {
