@@ -15,29 +15,24 @@ const { logger } = require('./middleware/logger');
 app.use(express.static('public'));
  // Get All (and search by query)
 app.use(logger);
-app.get('/api/notes', (req, res) => {
-   
-  const searchTerm = req.query.searchTerm;
-  if (searchTerm) {
-    let filteredList = data.filter(function(item) {
-      return item.title.includes(searchTerm);
-    });
-    res.json(filteredList);
-  } else {
-    res.json(data);
-  }
-   
- });
-app.get('/api/notes/:id', (req, res) => {
-  const id = req.params.id;
-   /**
-   * Verbose solution
-   */
-  let note = data.find(function(item) {
-    return item.id === Number(id);
+app.get('/api/notes', (req, res, next) => {
+  const { searchTerm } = req.query;
+  notes.filter(searchTerm, (err, list) => {
+    if(err){
+      return next(err);
+    }
+    res.json(list);
   });
-  res.json(note);
-   
+ });
+
+app.get('/api/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+  notes.find(id, (err, item) =>{
+    if(err){
+      return next(err);
+    }
+    res.json(item);
+  });
  });
 
  app.use(function(req, res, next){
