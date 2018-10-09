@@ -2,6 +2,8 @@
  const express = require('express');
  // Load array of notes
 const data = require('./db/notes');
+const simDB = require('./db/simDB');
+const notes = simDB.initialize(data);
  console.log('Hello Noteful!');
 
  const { PORT } = require('./config');
